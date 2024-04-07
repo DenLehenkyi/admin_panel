@@ -1,4 +1,4 @@
-import mongoose, {model, Schema, models} from "mongoose";
+import mongoose, { model, Schema } from "mongoose";
 
 const ProductSchema = new Schema({
   productName: { type: String, required: true },
@@ -6,5 +6,6 @@ const ProductSchema = new Schema({
   price: { type: Number, required: true },
 });
 
-// Перевірка, чи модель 'Product' вже скомпільована
-export const Product = models.Product || model('Product', ProductSchema);
+const Product = mongoose.models.Product || model('Product', ProductSchema);
+
+export default Product;
