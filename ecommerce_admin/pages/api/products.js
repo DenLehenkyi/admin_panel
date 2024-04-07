@@ -15,6 +15,7 @@ export default async function handle(req, res) {
     }
 
   }
+
   if (method === "POST") {
     const { productName, description, price } = req.body;
   
@@ -25,5 +26,16 @@ export default async function handle(req, res) {
       });
       res.json(productDoc);
     
+  }
+  if(method === "PUT"){
+    const { productName, description, price, _id } = req.body;
+    await Product.updateOne({_id}, {productName, description, price})
+    res.json(true);
+  }
+  if(method === 'DELETE'){
+    if(req.query?.id){
+      await Product.deleteOne({_id:req.query?.id});
+      res.json(true);
+    }
   }
 }

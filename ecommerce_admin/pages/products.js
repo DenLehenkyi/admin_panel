@@ -10,7 +10,7 @@ export default function Products() {
     axios
       .get("/api/products")
       .then((response) => {
-        setProducts(response.data); // Update products state with fetched data
+        setProducts(response.data); 
       })
       .catch((error) => {
         console.error("Error fetching products:", error);
@@ -20,12 +20,12 @@ export default function Products() {
   return (
     <Layout>
       <Link className="btn-primary" href={"/products/new"}>
-        Add new product
+        Додати новий матеріал
       </Link>
       <table className="basic mt-5">
         <thead>
           <tr>
-            <td>Product name</td>
+            <td>Назва товару</td>
             <td></td>
           </tr>
         </thead>

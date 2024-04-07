@@ -1,25 +1,40 @@
 import {useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import axios from "axios";
-export default function ProductForm() {
-  const [productName, setProductName] = useState("");
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
+
+export default function ProductForm({
+    _id,
+    productName:existingProductName, 
+    description:existingDescription,
+    price:exisitingPrice,
+}
+) 
+{
+  const [productName, setProductName] = useState(existingProductName || '');
+  const [description, setDescription] = useState(existingDescription || '');
+  const [price, setPrice] = useState(exisitingPrice || '');
   const [goToProducts, setGoToProducts] = useState(false);
   const router = useRouter();
 
-  async function createProduct(ev) {
+  async function saveNewProduct(ev) {
     ev.preventDefault();
     const data = { productName, description, price };
-    axios.post("/api/products", data);
+    if(_id){
+        await axios.put("/api/products", {...data,_id})
+    }
+    else{
+
+    await axios.post("/api/products", data);
+
+    }
     setGoToProducts(true);
   }
   if (goToProducts) {
     router.push("/products");
   }
   return (
-    <form onSubmit={createProduct}>
-      <h1>Додати новий товар</h1>
+    <form onSubmit={saveNewProduct}>
+   
       <label>Назва товару</label>
       <input
         type="text"
