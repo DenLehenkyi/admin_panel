@@ -24,7 +24,7 @@ export default function DeleteProductPage() {
   }
   return (
     <Layout>
-      <h1 className="text-center">Ви реально бажаєте видалити цей матеріал
+       <h1 className="text-center">Ви реально бажаєте видалити цей матеріал
         &nbsp;&quot;{productInfo?.productName}&quot;?
       </h1>
       <div className="flex gap-2 justify-center">
@@ -36,7 +36,7 @@ export default function DeleteProductPage() {
           onClick={goBack}>
           NO
         </button>
-      </div>
+      </div> 
     </Layout>
   );
 }
