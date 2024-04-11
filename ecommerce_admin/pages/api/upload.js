@@ -13,7 +13,7 @@ export default async function handle(req,res) {
       resolve({fields,files});
     });
   });
-  console.log('length:', files.file.length);
+  //console.log('length:', files.file.length);
   const client = new S3Client({
     region: 'eu-north-1',
     credentials: {
@@ -33,6 +33,7 @@ export default async function handle(req,res) {
       ContentType: mime.lookup(file.path),
     }));
     const link = `https://${bucketName}.s3.amazonaws.com/${newFilename}`;
+    console.log(link);
     links.push(link);
   }
   return res.json({links});

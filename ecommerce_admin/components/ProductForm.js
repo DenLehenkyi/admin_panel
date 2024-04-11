@@ -1,25 +1,45 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
-
+import Spinner from "./Spinner";
+import { ReactSortable } from "react-sortablejs";
 export default function ProductForm({
   _id,
   productName: existingProductName,
   description: existingDescription,
   price: exisitingPrice,
-  images,
+  images: existingImages,
+  category: existingCategory,
 }) {
   const [productName, setProductName] = useState(existingProductName || "");
   const [description, setDescription] = useState(existingDescription || "");
+  const [category, setCategory] = useState(exisitingPrice || '');
   const [price, setPrice] = useState(exisitingPrice || "");
+  const [images, setImages] = useState(existingImages || []);
   const [goToProducts, setGoToProducts] = useState(false);
+
+  const [isUploading, setIsUploading] = useState(false);
+  const [categories, setCategories] = useState([]);
+
+
   const router = useRouter();
+
+  useEffect(() => {
+    axios.get('/api/categories').then(result => {
+      setCategories(result.data);
+    })
+  }, []);
+
 
   async function saveNewProduct(ev) {
     ev.preventDefault();
-    const data = { productName, description, price };
+    const data = {
+       productName, 
+       description,
+        price, 
+        images, category };
     if (_id) {
-      await axios.put("/api/products", { ...data, _id });
+      await axios.put('/api/products', {...data,_id});
     } else {
       await axios.post("/api/products", data);
     }
@@ -31,15 +51,20 @@ export default function ProductForm({
   async function uploadImages(ev) {
     const files = ev.target?.files;
     if (files?.length > 0) {
+      setIsUploading(true);
       const data = new FormData();
       for (const file of files) {
         data.append("file", file);
       }
-      await fetch("/api/upload", {
-        method: "POST",
-        body: data,
+      const res = await axios.post('/api/upload', data);
+      setImages(oldImages => {
+        return [...oldImages, ...res.data.links];
       });
+       setIsUploading(false);
     }
+  }
+   function updateImagesOrder(images){
+    setImages(images)
   }
 
   return (
@@ -51,8 +76,35 @@ export default function ProductForm({
         value={productName}
         onChange={(ev) => setProductName(ev.target.value)}
       />
+      <label>Додати категорію</label>
+      <select value={category} 
+      onChange={ev => setCategory(ev.target.value)}>
+        
+        {categories.length >0 && categories.map(c =>(
+          
+          // eslint-disable-next-line react/jsx-key
+          <option value={c._id}>{c.categoryName}</option>
+        ))}
+      </select>
       <label>Фото</label>
-      <div className="mt-2 mb-2">
+      <div className="mt-2 mb-2 flex flex-wrap gap-1">
+        <ReactSortable 
+        list={images} 
+        className="flex flex-wrap"
+        setList={updateImagesOrder}>
+        {!!images?.length && images.map(link => (
+          <div key={link} className="inline-block h-24">
+            <img src={link} alt="" className="rounded-lg"></img>
+          </div>
+        ))}
+        </ReactSortable>
+        {isUploading && (
+          <div className="h-24 flex items-center">
+            <Spinner>
+            Завантажуємо..
+            </Spinner>
+          </div>
+        )}
         <label className="w-32 h-32 cursor-pointer border flex flex-col items-center justify-center text-sm gap-1 rounded-lg bg-gray-200">
           <svg
             xmlns="http://www.w3.org/2000/svg"
