@@ -7,8 +7,9 @@ const ProductSchema = new Schema({
   price: { type: Number, required: true },
   images: [{type:String}],
   category: {type:mongoose.Types.ObjectId, ref:'Category'},
-  properties: {type:Object},
-  file: [{type:String}], 
+  pages: {type: Number},
+
+  file: [{ name: String, url: String }], 
 });
 
 const Product = mongoose.models.Product || model('Product', ProductSchema);

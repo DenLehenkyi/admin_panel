@@ -11,20 +11,23 @@ export default function ProductForm({
   price: exisitingPrice,
   images: existingImages,
   category: existingCategory,
-  properties:assignedProperties,
+  pages: existingPages,
   file: existingFile,
-
 }) {
   const [productName, setProductName] = useState(existingProductName || "");
   const [description, setDescription] = useState(existingDescription || "");
-  const [category, setCategory] = useState(exisitingPrice || "");
+
+  const [category, setCategory] = useState(existingCategory || "");
+
   const [price, setPrice] = useState(exisitingPrice || "");
   const [images, setImages] = useState(existingImages || []);
   const [goToProducts, setGoToProducts] = useState(false);
-  const [productProperties,setProductProperties] = useState(assignedProperties || {});
+
   const [isUploading, setIsUploading] = useState(false);
   const [categories, setCategories] = useState([]);
   const [file, setFile] = useState(existingFile || []);
+
+  const [pages, setPages] = useState(existingPages || 0);
 
   const router = useRouter();
 
@@ -32,9 +35,7 @@ export default function ProductForm({
     axios.get("/api/categories").then((result) => {
       setCategories(result.data);
     });
-    
   }, []);
-
 
   async function saveNewProduct(ev) {
     ev.preventDefault();
@@ -44,8 +45,8 @@ export default function ProductForm({
       price,
       images,
       category,
-      properties:productProperties,
       file,
+      pages,
     };
     if (_id) {
       await axios.put("/api/products", { ...data, _id });
@@ -72,50 +73,51 @@ export default function ProductForm({
       setIsUploading(false);
     }
   }
+  // async function uploadFiles(ev) {
+  //   const files = ev.target.files;
+  //   console.log(files);
+  //   if (files.length > 0) {
+
+  //     const data = new FormData();
+  //     // Перебираємо всі файли та додаємо їх до об'єкту FormData
+  //     for (let i = 0; i < files.length; i++) {
+  //       data.append("file", files[i]);
+  //     }
+  //     const res = await axios.post("/api/upload", data);
+
+  //     setFile((oldFiles) => {
+  //       // Додаємо нові файли до існуючого масиву
+  //       return [...oldFiles, ...res.data.links];
+  //     });
+
+  //   }
+  // }
   async function uploadFiles(ev) {
     const files = ev.target.files;
-    console.log(files); 
     if (files.length > 0) {
-      setIsUploading(true);
-      const data = new FormData();
-      // Перебираємо всі файли та додаємо їх до об'єкту FormData
+      let uploadedFiles = [];
       for (let i = 0; i < files.length; i++) {
+        const data = new FormData();
         data.append("file", files[i]);
+        const res = await axios.post("/api/upload", data);
+        uploadedFiles.push({ name: files[i].name, url: res.data.links[0] });
       }
-      const res = await axios.post("/api/upload", data);
-      
-      setFile((oldFiles) => {
-        // Додаємо нові файли до існуючого масиву
-        return [...oldFiles, ...res.data.links];
-      });
-      setIsUploading(false);
+      setFile((oldFiles) => [...oldFiles, ...uploadedFiles]);
     }
   }
+  
+  
   function updateImagesOrder(images) {
     setImages(images);
   }
-  
-  function setProductProp(propName,value) {
-    setProductProperties(prev => {
-      const newProductProps = {...prev};
-      newProductProps[propName] = value;
-      return newProductProps;
+  function removeImage(index) {
+    setImages((prevImages) => {
+      const updatedImages = [...prevImages];
+      updatedImages.splice(index, 1);
+      return updatedImages;
     });
   }
-  const propertiesToFill = [];
-  if (categories.length > 0 && category) {
-    let catInfo = categories.find(({_id}) => _id === category);
-    if (catInfo) {
-      propertiesToFill.push(...catInfo.properties);
-      while (catInfo?.parent?._id) {
-        const parentCat = categories.find(({_id}) => _id === catInfo?.parentCategory?._id);
-        if (parentCat) {
-          propertiesToFill.push(...parentCat.properties);
-          catInfo = parentCat;
-        }
-      }
-    }
-  }
+
   return (
     <form onSubmit={saveNewProduct}>
       <label>Назва товару</label>
@@ -125,46 +127,55 @@ export default function ProductForm({
         value={productName}
         onChange={(ev) => setProductName(ev.target.value)}
       />
-     <label>Додати категорію</label>
-<select value={category} onChange={(ev) => setCategory(ev.target.value)}>
-  <option value="">Виберіть категорію</option>
-  {categories.length > 0 &&
-    categories.map((c) => (
-      <option key={c._id} value={c._id}>{c.categoryName}</option>
-    ))}
-</select>
+      <label>Додати категорію</label>
+      <select value={category} onChange={(ev) => setCategory(ev.target.value)}>
+        <option value="">Виберіть категорію</option>
+        {categories.length > 0 &&
+          categories.map((c) => (
+            <option key={c._id} value={c._id}>
+              {c.categoryName}
+            </option>
+          ))}
+      </select>
 
-  {}
-  {category && (
-  <div>
-    <label>Вибрана категорія: <b>{categories.find(cat => cat._id === category)?.categoryName}</b></label>
-    {categories.find(cat => cat._id === category)?.properties.map((property, index) => (
-      <div key={index}>
-        <div>{property.name}</div>
-        <label htmlFor={`property-${index}`}>Введіть кількість слайдів / сторінок</label>
-        <br />
+      {/* Показуємо вибрану категорію */}
+      {category && (
+        <div>
+          <label>
+            Вибрана категорія:{" "}
+            <b>
+              {categories.find((cat) => cat._id === category)?.categoryName}
+            </b>
+          </label>
+        </div>
+      )}
+
+      <div>
+        <label>
+          Введіть кількість <b>(cторінок / слайдів)</b>
+        </label>
         <input
-          id={`property-${index}`}
-          type="text"
-          placeholder="Введіть кількість слайдів / сторінок"
-          value={productProperties[property.name]}
-          onChange={(ev) => setProductProp(property.name, ev.target.value)}
-        />
+          type="number"
+          placeholder="Введіть кількість сторінок /  слайдів"
+          value={pages}
+          onChange={(ev) => setPages(ev.target.value)}
+        ></input>
       </div>
-    ))}
-  </div>
-)}
-  <div className="flex gap-1 flex-col">
+      <div className="flex gap-1 flex-col">
         <label>Завантажити файл</label>
         <input type="file" onChange={uploadFiles} />
         {/* Відобразити список імен файлів */}
-        {file.length > 0 && (
-          <ul>
-            {file.map((uploadedFile, index) => (
-              <li key={index}>{uploadedFile.name}</li>
-            ))}
-  
-          </ul>
+        {file.length > 0 ? (
+          <div>
+            <label>Вибрані файли:</label>
+            <ul>
+              {file.map((uploadedFile, index) => (
+                <li key={index}>{uploadedFile.name}</li>
+              ))}
+            </ul>
+          </div>
+        ) : (
+          <div>Файл не вибрано</div>
         )}
       </div>
       <label>Фото</label>
@@ -174,10 +185,16 @@ export default function ProductForm({
           className="flex flex-wrap"
           setList={updateImagesOrder}
         >
-          {!!images?.length &&
-            images.map((link) => (
-              <div key={link} className="inline-block h-24">
-                <img src={link} alt="" className="rounded-lg"></img>
+          {images?.length > 0 &&
+            images.map((link, index) => (
+              <div key={link} className="inline-block h-24 relative">
+                <img src={link} alt="" className="rounded-lg" />
+                <button
+                  className="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full "
+                  onClick={() => removeImage(index)}
+                >
+                  X
+                </button>
               </div>
             ))}
         </ReactSortable>
@@ -226,4 +243,4 @@ export default function ProductForm({
       </button>
     </form>
   );
-  }
+}

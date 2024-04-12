@@ -1,10 +1,10 @@
 import Product from "@/models/Product";
 import { mongooseConnect } from "@/lib/mongoose";
-
+import {isAdminRequest } from "./auth/[...nextauth]";
 export default async function handle(req, res) {
   const { method } = req;
   await mongooseConnect();
-
+  await isAdminRequest(req,res);
   
   if (method === 'GET') {
     if (req.query?.id) {
@@ -15,7 +15,7 @@ export default async function handle(req, res) {
   }
 
   if (method === "POST") {
-    const { productName, description, price, images, category,properties,file } = req.body;
+    const { productName, description, price, images, category, pages, file } = req.body;
   
       const productDoc = await Product.create({
         productName,
@@ -23,14 +23,14 @@ export default async function handle(req, res) {
         price,
         images,
         category,
-        properties,
+        pages,
         file,
       });
       res.json(productDoc);
     
   }
   if (method === "PUT") {
-    const { productName, description, price, images, _id, category, properties, file } = req.body;
+    const { productName, description, price, images, _id, category, pages, file } = req.body;
 
     // Перетворюємо file на масив, якщо він не є масивом
     const updatedFile = Array.isArray(file) ? file : [file];
@@ -43,7 +43,7 @@ export default async function handle(req, res) {
         price,
         images,
         category,
-        properties,
+        pages,
         file: updatedFile, // Оновлюємо поле file
       }
     );
