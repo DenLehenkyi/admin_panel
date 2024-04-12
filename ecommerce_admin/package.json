@@ -26,7 +26,8 @@
     "react-sortablejs": "^6.1.4",
     "react-spinners": "^0.13.8",
     "react-sweetalert2": "^0.6.0",
-    "sortablejs": "^1.15.2"
+    "sortablejs": "^1.15.2",
+    "vercel": "^34.0.0"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.19",
