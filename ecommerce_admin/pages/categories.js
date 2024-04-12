@@ -30,7 +30,10 @@ function Categories({swal}) {
     const data = {
         categoryName, 
         parentCategory, 
-        properties:properties.map(p => ({name:p.name, values:p.values}))
+        properties:properties.map(p => ({
+          name:p.name, 
+          values:p.values.split(','),
+        }))
     }
     if (editedCategory) {
         data._id = editedCategory._id;
@@ -49,7 +52,12 @@ function Categories({swal}) {
     setEditedCategory(category);
     setName(category.categoryName);
     setParentCategory(category.parentCategory?._id)
-
+    setProperties(
+      category.properties.map(({name,values}) => ({
+      name,
+      values:values.join(',')
+    }))
+    );
   }
   function deleteCategory(category){
     swal.fire({
@@ -155,18 +163,7 @@ function Categories({swal}) {
                 PDF документ (.pdf)
             </option>
         </select>
-        <input 
-          type="number"
-          className="mb-0"
-          onChange={ev =>
-            handlePropertyValuesChange(
-              index,
-              property,
-              ev.target.value
-            )}
-          value={property.values}
-          placeholder="Кількість слайдів"
-        />
+       
         <button
           onClick={() => removeProperty(index)}
           type="button"
