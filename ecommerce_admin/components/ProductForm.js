@@ -73,25 +73,7 @@ export default function ProductForm({
       setIsUploading(false);
     }
   }
-  // async function uploadFiles(ev) {
-  //   const files = ev.target.files;
-  //   console.log(files);
-  //   if (files.length > 0) {
-
-  //     const data = new FormData();
-  //     // Перебираємо всі файли та додаємо їх до об'єкту FormData
-  //     for (let i = 0; i < files.length; i++) {
-  //       data.append("file", files[i]);
-  //     }
-  //     const res = await axios.post("/api/upload", data);
-
-  //     setFile((oldFiles) => {
-  //       // Додаємо нові файли до існуючого масиву
-  //       return [...oldFiles, ...res.data.links];
-  //     });
-
-  //   }
-  // }
+  
   async function uploadFiles(ev) {
     const files = ev.target.files;
     if (files.length > 0) {
