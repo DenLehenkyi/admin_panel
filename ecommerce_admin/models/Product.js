@@ -8,6 +8,8 @@ const ProductSchema = new Schema({
   images: [{type:String}],
   category: {type:mongoose.Types.ObjectId, ref:'Category'},
   pages: {type: Number},
+  feedback: {type:mongoose.Types.ObjectId, ref:'Feedback'},
+  rate:  {type: Number},
 
   file: [{ name: String, url: String }], 
 });
