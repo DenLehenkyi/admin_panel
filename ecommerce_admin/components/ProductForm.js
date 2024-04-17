@@ -18,14 +18,14 @@ export default function ProductForm({
   const [productName, setProductName] = useState(existingProductName || "");
   const [description, setDescription] = useState(existingDescription || "");
 
-  const [category, setCategory] = useState(existingCategory || "");
+  const [subcategory, setSubCategory] = useState(existingCategory || "");
 
   const [price, setPrice] = useState(exisitingPrice || "");
   const [images, setImages] = useState(existingImages || []);
   const [goToProducts, setGoToProducts] = useState(false);
 
   const [isUploading, setIsUploading] = useState(false);
-  const [categories, setCategories] = useState([]);
+  const [subcategories, setSubCategories] = useState([]);
   const [file, setFile] = useState(existingFile || []);
 
   const [pages, setPages] = useState(existingPages || 0);
@@ -33,8 +33,8 @@ export default function ProductForm({
   const router = useRouter();
 
   useEffect(() => {
-    axios.get("/api/categories").then((result) => {
-      setCategories(result.data);
+    axios.get("/api/subcategories").then((result) => {
+      setSubCategories(result.data);
     });
   }, []);
 
@@ -45,7 +45,7 @@ export default function ProductForm({
       description,
       price,
       images,
-      category,
+      subcategory,
       file,
       pages,
     };
@@ -110,24 +110,24 @@ export default function ProductForm({
         value={productName}
         onChange={(ev) => setProductName(ev.target.value)}
       />
-      <label>Додати категорію</label>
-      <select value={category} onChange={(ev) => setCategory(ev.target.value)}>
-        <option value="">Виберіть категорію</option>
-        {categories.length > 0 &&
-          categories.map((c) => (
+      <label>Додати підкатегорію</label>
+      <select value={subcategory} onChange={(ev) => setSubCategory(ev.target.value)}>
+        <option value="" disabled hidden>Виберіть підкатегорію</option>
+        {subcategories.length > 0 &&
+           subcategories.map((c) => (
             <option key={c._id} value={c._id}>
-              {c.categoryName}
+              {c.subCategoryName}
             </option>
           ))}
       </select>
 
       {/* Показуємо вибрану категорію */}
-      {category && (
+      {subcategory && (
         <div>
           <label>
-            Вибрана категорія:{" "}
+            Вибрана підкатегорія:{" "}
             <b>
-              {categories.find((cat) => cat._id === category)?.categoryName}
+              {subcategories.find((cat) => cat._id === subcategory)?.subCategoryName}
             </b>
           </label>
         </div>
