@@ -11,7 +11,7 @@ export default function ProductForm({
   description: existingDescription,
   price: exisitingPrice,
   images: existingImages,
-  category: existingCategory,
+  subcategory: existingCategory,
   pages: existingPages,
   file: existingFile,
 }) {
