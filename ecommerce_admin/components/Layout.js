@@ -14,9 +14,11 @@ export default function Layout({ children }) {
         <div className="text-center">
           <button
             onClick={() => signIn("google")}
-            className="bg-purple-900 p-2 px-4 rounded-lg text-white w-1280 h-960"
+            className="bg-purple-900 p-4 rounded-lg text-white w-400px h-400px"
+
           >
             Увійти з Google
+
           </button>
           
         </div>
