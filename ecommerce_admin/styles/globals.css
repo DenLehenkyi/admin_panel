@@ -6,20 +6,20 @@ img{
     max-height: 100%;
 }
 input, textarea, select{
-    @apply border border-gray-200 rounded-sm px-1 w-full py-2 px-3;
+    @apply border border-gray-200 rounded-lg px-1 w-full py-2 px-3;
     @apply mb-2;
 }
 input:focus, textarea:focus, select:focus{
     @apply border-blue-900;
 }
 h1{
-    @apply text-gray-800 mb-4 text-xl;
+    @apply text-gray-800 mb-4 text-lg;
 }
 label{
-    @apply text-gray-600 text-sm;
+    @apply text-gray-600 text-lg;
 }
 .btn-primary{
-    @apply bg-primary text-white px-4 py-1 rounded-sm shadow-lg;
+    @apply bg-primary text-white px-4 py-1 rounded-lg shadow-lg;
 }
 table.basic{
     @apply w-full bg-white rounded-sm shadow-md;
