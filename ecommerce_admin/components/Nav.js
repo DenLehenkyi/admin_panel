@@ -1,9 +1,8 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import {signOut} from "next-auth/react";
-import Logo from "@/components/Logo";
 
-export default function Nav({show}) {
+export default function Nav() {
   const inactiveLink = 'flex gap-1 p-1';
   const activeLink = inactiveLink+' bg-highlight text-black rounded-sm';
   const inactiveIcon = 'w-6 h-6';
@@ -17,11 +16,26 @@ export default function Nav({show}) {
   }
 
   return (
-    <aside className={(show?'left-0':'-left-full')+" top-0 text-black-900 p-4 fixed w-full bg-bgGray h-full md:static md:w-auto transition-all"}>
-      <div>
-      <Logo className="mb-4 mr-4"></Logo>
-      </div>
-      
+    <aside className="text-gray-500 p-4">
+      <Link href={"/"} className="flex gap-1 mb-4 mr-10">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={1.5}
+          stroke="currentColor"
+          className="w-6 h-6"
+          
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75"
+          />
+        </svg>
+
+        <span className="">Панель адміністратора</span>
+      </Link>
       <nav className="flex flex-col gap-2">
         <Link href={"/"} className={pathname === '/' ? activeLink : inactiveLink}>
           <svg
@@ -30,7 +44,7 @@ export default function Nav({show}) {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className={pathname.includes('/') ? inactiveIcon : activeIcon}
+            className="w-6 h-6"
           >
             <path
               strokeLinecap="round"
@@ -58,11 +72,8 @@ export default function Nav({show}) {
           Матеріали
         </Link>
         <Link href={'/categories'} className={pathname.includes('/categories') ? activeLink : inactiveLink}>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
-        
-        className={pathname.includes('/categories') ? activeIcon : inactiveIcon}>
-  
-      <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z" />
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z" />
 </svg>
   
         Категорії
