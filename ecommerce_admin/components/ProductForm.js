@@ -170,15 +170,15 @@ export default function ProductForm({
         >
           {images?.length > 0 &&
             images.map((link, index) => (
-              <div key={link} className="inline-block h-24 relative">
-                <img src={link} alt="" className="rounded-lg" />
-                <button
-                  className="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full "
-                  onClick={() => removeImage(index)}
-                >
-                  X
-                </button>
-              </div>
+              <div key={link} className="h-24 bg-white p-4 shadow-sm rounded-sm border border-gray-200 relative">
+              <img src={link} alt="" className="rounded-lg" />
+              <button
+                className="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full w-5 h-5 flex justify-center items-center"
+                onClick={() => removeImage(index)}
+              >
+                X
+              </button>
+            </div>
             ))}
         </ReactSortable>
         {isUploading && (
