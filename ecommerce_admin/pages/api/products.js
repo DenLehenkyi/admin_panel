@@ -7,15 +7,26 @@ export default async function handle(req, res) {
   await isAdminRequest(req,res);
   
   if (method === 'GET') {
-    if (req.query?.id) {
-      res.json(await Product.findOne({_id:req.query.id}));
-    } else {
-      res.json(await Product.find());
+    try {
+      if (req.query?.id) {
+        const product = await Product.findOne({ _id: req.query.id });
+        if (product) {
+          res.json(product);
+        } else {
+          res.status(404).json({ message: 'Product not found' });
+        }
+      } else {
+        const products = await Product.find();
+        res.json(products);
+      }
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      res.status(500).json({ message: 'Internal server error' });
     }
   }
-
+  
   if (method === "POST") {
-    const { productName, description, price, images, subcategory, pages, file } = req.body;
+    const { productName, description, price, images, subcategory, pages, file, schoolClass } = req.body;
   
       const productDoc = await Product.create({
         productName,
@@ -25,12 +36,13 @@ export default async function handle(req, res) {
         subcategory,
         pages,
         file,
+        schoolClass,
       });
       res.json(productDoc);
     
   }
   if (method === "PUT") {
-    const { productName, description, price, images, _id, subcategory, pages, file } = req.body;
+    const { productName, description, price, images, _id, subcategory, pages, file,schoolClass } = req.body;
 
     // Перетворюємо file на масив, якщо він не є масивом
     const updatedFile = Array.isArray(file) ? file : [file];
@@ -44,7 +56,9 @@ export default async function handle(req, res) {
         images,
         subcategory,
         pages,
-        file: updatedFile, // Оновлюємо поле file
+        file: updatedFile,
+        schoolClass,
+         // Оновлюємо поле file
       }
     );
     res.json(true);

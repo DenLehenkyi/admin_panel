@@ -14,10 +14,12 @@ export default function ProductForm({
   subcategory: existingCategory,
   pages: existingPages,
   file: existingFile,
+  schoolClass: existingClass,
 }) {
   const [productName, setProductName] = useState(existingProductName || "");
   const [description, setDescription] = useState(existingDescription || "");
 
+  const [schoolClass, setClass] = useState(existingClass  || "");
   const [subcategory, setSubCategory] = useState(existingCategory || "");
 
   const [price, setPrice] = useState(exisitingPrice || "");
@@ -48,6 +50,7 @@ export default function ProductForm({
       subcategory,
       file,
       pages,
+      schoolClass,
     };
     if (_id) {
       await axios.put("/api/products", { ...data, _id });
@@ -132,7 +135,31 @@ export default function ProductForm({
           </label>
         </div>
       )}
-
+      <div>
+        <label>
+          Виберіть клас
+        </label>
+        <select value={schoolClass} onChange={(ev) => setClass(ev.target.value)}>
+          <option>1 клас</option>
+          <option>2 клас</option>
+          <option>3 клас</option>
+          <option>4 клас</option>
+          <option>5 клас</option>
+          <option>6 клас</option>
+          <option>7 клас</option>
+          <option>8 клас</option>
+          <option>9 клас</option>
+          <option>10 клас</option>
+          <option>11 клас</option>
+        </select>
+      </div>
+      {schoolClass && (
+  <div>
+    <label>
+      Вибраний клас: <b>{schoolClass}</b>
+    </label>
+  </div>
+)}
       <div>
         <label>
           Введіть кількість <b>(cторінок / слайдів)</b>
