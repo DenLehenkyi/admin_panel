@@ -26,22 +26,27 @@ export default async function handle(req, res) {
   }
   
   if (method === "POST") {
-    const { productName, description, price, images, category, pages, file } = req.body;
+    const { productName, description, price, images, category, subcategory,pages, file, feedback, schoolClass, rate } = req.body;
   
       const productDoc = await Product.create({
         productName,
         description,
         price,
         images,
+        category,
         subcategory,
-        pages,
         file,
+        pages,
+        feedback,
+        schoolClass,
+        rate,
       });
       res.json(productDoc);
     
   }
   if (method === "PUT") {
-    const { productName, description, price, images, _id, category, pages, file } = req.body;
+      
+    const { productName, description, price, images, _id, category,subcategory, pages, file, feedback, schoolClass, rate } = req.body;
 
     // Перетворюємо file на масив, якщо він не є масивом
     const updatedFile = Array.isArray(file) ? file : [file];
@@ -53,9 +58,13 @@ export default async function handle(req, res) {
         description,
         price,
         images,
+        category,
         subcategory,
         pages,
         file: updatedFile, // Оновлюємо поле file
+        feedback,
+         schoolClass, 
+         rate,
       }
     );
     res.json(true);
