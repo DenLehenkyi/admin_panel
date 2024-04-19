@@ -14,6 +14,9 @@ export default function ProductForm({
   category: existingCategory,
   pages: existingPages,
   file: existingFile,
+  feedback,
+  schoolClass,
+  rate,
 }) {
   const [productName, setProductName] = useState(existingProductName || "");
   const [description, setDescription] = useState(existingDescription || "");
@@ -48,6 +51,9 @@ export default function ProductForm({
       subcategory,
       file,
       pages,
+      feedback,
+      schoolClass,
+      rate,
     };
     if (_id) {
       await axios.put("/api/products", { ...data, _id });
