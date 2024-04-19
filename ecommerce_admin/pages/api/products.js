@@ -7,33 +7,41 @@ export default async function handle(req, res) {
   await isAdminRequest(req,res);
   
   if (method === 'GET') {
-    if (req.query?.id) {
-      res.json(await Product.findOne({_id:req.query.id}));
-    } else {
-      res.json(await Product.find());
+    try {
+      if (req.query?.id) {
+        const product = await Product.findOne({ _id: req.query.id });
+        if (product) {
+          res.json(product);
+        } else {
+          res.status(404).json({ message: 'Product not found' });
+        }
+      } else {
+        const products = await Product.find();
+        res.json(products);
+      }
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      res.status(500).json({ message: 'Internal server error' });
     }
   }
-
+  
   if (method === "POST") {
-    const { productName, description, price, images, category, pages, file,feedback,schoolClass,rate } = req.body;
+    const { productName, description, price, images, category, pages, file } = req.body;
   
       const productDoc = await Product.create({
         productName,
         description,
         price,
         images,
-        category,
+        subcategory,
         pages,
         file,
-        feedback,
-        schoolClass,
-        rate,
       });
       res.json(productDoc);
     
   }
   if (method === "PUT") {
-    const { productName, description, price, images, _id, category, pages, file,feedback,schoolClass,rate } = req.body;
+    const { productName, description, price, images, _id, category, pages, file } = req.body;
 
     // Перетворюємо file на масив, якщо він не є масивом
     const updatedFile = Array.isArray(file) ? file : [file];
@@ -45,12 +53,9 @@ export default async function handle(req, res) {
         description,
         price,
         images,
-        category,
+        subcategory,
         pages,
-        file: updatedFile,
-        feedback,
-        schoolClass,
-        rate,
+        file: updatedFile, // Оновлюємо поле file
       }
     );
     res.json(true);

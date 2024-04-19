@@ -11,16 +11,14 @@ export default function ProductForm({
   description: existingDescription,
   price: exisitingPrice,
   images: existingImages,
-  category: existingCategory,
+  subcategory: existingCategory,
   pages: existingPages,
   file: existingFile,
-  feedback,
-  schoolClass,
-  rate,
 }) {
   const [productName, setProductName] = useState(existingProductName || "");
   const [description, setDescription] = useState(existingDescription || "");
 
+  const [schoolClass, setClass] = useState(existingClass  || "");
   const [subcategory, setSubCategory] = useState(existingCategory || "");
 
   const [price, setPrice] = useState(exisitingPrice || "");
@@ -51,9 +49,6 @@ export default function ProductForm({
       subcategory,
       file,
       pages,
-      feedback,
-      schoolClass,
-      rate,
     };
     if (_id) {
       await axios.put("/api/products", { ...data, _id });
@@ -138,7 +133,31 @@ export default function ProductForm({
           </label>
         </div>
       )}
-
+      <div>
+        <label>
+          Виберіть клас
+        </label>
+        <select value={schoolClass} onChange={(ev) => setClass(ev.target.value)}>
+          <option>1 клас</option>
+          <option>2 клас</option>
+          <option>3 клас</option>
+          <option>4 клас</option>
+          <option>5 клас</option>
+          <option>6 клас</option>
+          <option>7 клас</option>
+          <option>8 клас</option>
+          <option>9 клас</option>
+          <option>10 клас</option>
+          <option>11 клас</option>
+        </select>
+      </div>
+      {schoolClass && (
+  <div>
+    <label>
+      Вибраний клас: <b>{schoolClass}</b>
+    </label>
+  </div>
+)}
       <div>
         <label>
           Введіть кількість <b>(cторінок / слайдів)</b>
@@ -176,15 +195,15 @@ export default function ProductForm({
         >
           {images?.length > 0 &&
             images.map((link, index) => (
-              <div key={link} className="inline-block h-24 relative">
-                <img src={link} alt="" className="rounded-lg" />
-                <button
-                  className="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full "
-                  onClick={() => removeImage(index)}
-                >
-                  X
-                </button>
-              </div>
+              <div key={link} className="h-24 bg-white p-4 shadow-sm rounded-sm border border-gray-200 relative">
+              <img src={link} alt="" className="rounded-lg" />
+              <button
+                className="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full w-5 h-5 flex justify-center items-center"
+                onClick={() => removeImage(index)}
+              >
+                X
+              </button>
+            </div>
             ))}
         </ReactSortable>
         {isUploading && (

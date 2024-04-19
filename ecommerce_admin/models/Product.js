@@ -8,8 +8,7 @@ const ProductSchema = new Schema({
   images: [{type:String}],
   subcategory: {type:mongoose.Types.ObjectId, ref:'SubCategory'},
   pages: {type: Number},
-  feedback: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Feedback' }],
-  schoolClass: String,
+  feedback: {type:mongoose.Types.ObjectId, ref:'Feedback'},
   rate:  {type: Number},
   file: [{ name: String, url: String }], 
 });

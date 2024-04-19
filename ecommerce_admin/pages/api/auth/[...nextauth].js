@@ -1,7 +1,7 @@
-import NextAuth, {getServerSession} from 'next-auth'
-import GoogleProvider from 'next-auth/providers/google'
+import clientPromise from '@/lib/mongodb'
 import { MongoDBAdapter } from '@auth/mongodb-adapter'
-import clientPromise from "@/lib/mongodb";
+import NextAuth, { getServerSession } from 'next-auth'
+import GoogleProvider from 'next-auth/providers/google' 
 
 const adminEmails = [
   "denlehenkyi@gmail.com",
@@ -9,9 +9,7 @@ const adminEmails = [
   "pankiv.yaryna00@gmail.com"
 ];
 
-
 export const authOptions = {
-  secret: process.env.SECRET,
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_ID,
@@ -21,14 +19,16 @@ export const authOptions = {
   adapter: MongoDBAdapter(clientPromise),
   callbacks: {
     session: ({session,token,user}) => {
-      if (adminEmails.includes(session?.user?.email)) {
+      if (adminEmails.includes(session?.user?.email)  ) {
         return session;
       } else {
-        return false;
+        return false; // FALSE
       }
-    },
+    }
   },
-};
+  secret: process.env.NEXT_AUTH_SECRET,
+
+}
 
 export default NextAuth(authOptions);
 
