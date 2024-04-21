@@ -1,6 +1,7 @@
 import Product from "@/models/Product";
 import { mongooseConnect } from "@/lib/mongoose";
 import {isAdminRequest } from "./auth/[...nextauth]";
+import { Feedback } from "@/models/Feedback";
 export default async function handle(req, res) {
   const { method } = req;
   await mongooseConnect();
@@ -69,10 +70,20 @@ export default async function handle(req, res) {
     );
     res.json(true);
   }
-  if(method === 'DELETE'){
-    if(req.query?.id){
-      await Product.deleteOne({_id:req.query?.id});
-      res.json(true);
-    } 
+  if (method === 'DELETE') {
+    if (req.query?.id) {
+  
+        const product = await Product.findOne({ _id: req.query.id });
+        if (!product) {
+          return res.status(404).json({ message: 'Product not found' });
+        }
+  
+        await Feedback.deleteMany({ _id: { $in: product.feedback } });
+
+        await Product.deleteOne({ _id: req.query.id });
+
+    } else {
+      return res.status(400).json({ message: 'Missing product ID' });
+    }
   }
 }
