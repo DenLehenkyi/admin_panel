@@ -1,6 +1,7 @@
 import Product from "@/models/Product";
 import { mongooseConnect } from "@/lib/mongoose";
 import {isAdminRequest } from "./auth/[...nextauth]";
+import { Feedback } from "@/models/Feedback";
 export default async function handle(req, res) {
   const { method } = req;
   await mongooseConnect();
@@ -26,23 +27,27 @@ export default async function handle(req, res) {
   }
   
   if (method === "POST") {
-    const { productName, description, price, images, subcategory, pages, file, schoolClass } = req.body;
+    const { productName, description, price, images, category, subcategory,pages, file, feedback, schoolClass, rate } = req.body;
   
       const productDoc = await Product.create({
         productName,
         description,
         price,
         images,
+        category,
         subcategory,
-        pages,
         file,
+        pages,
+        feedback,
         schoolClass,
+        rate,
       });
       res.json(productDoc);
     
   }
   if (method === "PUT") {
-    const { productName, description, price, images, _id, subcategory, pages, file,schoolClass } = req.body;
+      
+    const { productName, description, price, images, _id, category,subcategory, pages, file, feedback, schoolClass, rate } = req.body;
 
     // Перетворюємо file на масив, якщо він не є масивом
     const updatedFile = Array.isArray(file) ? file : [file];
@@ -54,19 +59,31 @@ export default async function handle(req, res) {
         description,
         price,
         images,
+        category,
         subcategory,
         pages,
-        file: updatedFile,
-        schoolClass,
-         // Оновлюємо поле file
+        file: updatedFile, // Оновлюємо поле file
+        feedback,
+         schoolClass, 
+         rate,
       }
     );
     res.json(true);
   }
-  if(method === 'DELETE'){
-    if(req.query?.id){
-      await Product.deleteOne({_id:req.query?.id});
-      res.json(true);
-    } 
+  if (method === 'DELETE') {
+    if (req.query?.id) {
+  
+        const product = await Product.findOne({ _id: req.query.id });
+        if (!product) {
+          return res.status(404).json({ message: 'Product not found' });
+        }
+  
+        await Feedback.deleteMany({ _id: { $in: product.feedback } });
+
+        await Product.deleteOne({ _id: req.query.id });
+
+    } else {
+      return res.status(400).json({ message: 'Missing product ID' });
+    }
   }
 }

@@ -14,12 +14,14 @@ export default function ProductForm({
   subcategory: existingCategory,
   pages: existingPages,
   file: existingFile,
+  feedback,
   schoolClass: existingClass,
+  rate,
 }) {
   const [productName, setProductName] = useState(existingProductName || "");
   const [description, setDescription] = useState(existingDescription || "");
 
-  const [schoolClass, setClass] = useState(existingClass  || "");
+  const [schoolClass, setClass] = useState(existingClass || "");
   const [subcategory, setSubCategory] = useState(existingCategory || "");
 
   const [price, setPrice] = useState(exisitingPrice || "");
@@ -50,7 +52,9 @@ export default function ProductForm({
       subcategory,
       file,
       pages,
+      feedback,
       schoolClass,
+      rate,
     };
     if (_id) {
       await axios.put("/api/products", { ...data, _id });
@@ -77,7 +81,7 @@ export default function ProductForm({
       setIsUploading(false);
     }
   }
-  
+
   async function uploadFiles(ev) {
     const files = ev.target.files;
     if (files.length > 0) {
@@ -91,8 +95,7 @@ export default function ProductForm({
       setFile((oldFiles) => [...oldFiles, ...uploadedFiles]);
     }
   }
-  
-  
+
   function updateImagesOrder(images) {
     setImages(images);
   }
@@ -114,10 +117,15 @@ export default function ProductForm({
         onChange={(ev) => setProductName(ev.target.value)}
       />
       <label>Додати підкатегорію</label>
-      <select value={subcategory} onChange={(ev) => setSubCategory(ev.target.value)}>
-        <option value="" disabled hidden>Виберіть підкатегорію</option>
+      <select
+        value={subcategory}
+        onChange={(ev) => setSubCategory(ev.target.value)}
+      >
+        <option value="" disabled hidden>
+          Виберіть підкатегорію
+        </option>
         {subcategories.length > 0 &&
-           subcategories.map((c) => (
+          subcategories.map((c) => (
             <option key={c._id} value={c._id}>
               {c.subCategoryName}
             </option>
@@ -130,16 +138,20 @@ export default function ProductForm({
           <label>
             Вибрана підкатегорія:{" "}
             <b>
-              {subcategories.find((cat) => cat._id === subcategory)?.subCategoryName}
+              {
+                subcategories.find((cat) => cat._id === subcategory)
+                  ?.subCategoryName
+              }
             </b>
           </label>
         </div>
       )}
       <div>
-        <label>
-          Виберіть клас
-        </label>
-        <select value={schoolClass} onChange={(ev) => setClass(ev.target.value)}>
+        <label>Виберіть клас</label>
+        <select
+          value={schoolClass}
+          onChange={(ev) => setClass(ev.target.value)}
+        >
           <option>1 клас</option>
           <option>2 клас</option>
           <option>3 клас</option>
@@ -154,12 +166,12 @@ export default function ProductForm({
         </select>
       </div>
       {schoolClass && (
-  <div>
-    <label>
-      Вибраний клас: <b>{schoolClass}</b>
-    </label>
-  </div>
-)}
+        <div>
+          <label>
+            Вибраний клас: <b>{schoolClass}</b>
+          </label>
+        </div>
+      )}
       <div>
         <label>
           Введіть кількість <b>(cторінок / слайдів)</b>
@@ -197,15 +209,18 @@ export default function ProductForm({
         >
           {images?.length > 0 &&
             images.map((link, index) => (
-              <div key={link} className="h-24 bg-white p-4 shadow-sm rounded-sm border border-gray-200 relative">
-              <img src={link} alt="" className="rounded-lg" />
-              <button
-                className="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full w-5 h-5 flex justify-center items-center"
-                onClick={() => removeImage(index)}
+              <div
+                key={link}
+                className="h-24 bg-white p-4 shadow-sm rounded-sm border border-gray-200 relative"
               >
-                X
-              </button>
-            </div>
+                <img src={link} alt="" className="rounded-lg" />
+                <button
+                  className="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full w-5 h-5 flex justify-center items-center"
+                  onClick={() => removeImage(index)}
+                >
+                  X
+                </button>
+              </div>
             ))}
         </ReactSortable>
         {isUploading && (
