@@ -44,24 +44,41 @@ export default function Settings() {
 
   return (
     <Layout>
-      <h1>Налаштування</h1>
-      <h2>Список адміністраторів</h2>
-      <ul>
-        {admins.map((admin, index) => (
-          <li key={index}>
-            {admin.email}{" "}
-            <button onClick={() => deleteAdmin(admin.email)}>Видалити</button>
-          </li>
-        ))}
-      </ul>
-      <h2>Додати нового адміністратора</h2>
-      <input
-        type="email"
-        value={newAdminEmail}
-        onChange={(e) => setNewAdminEmail(e.target.value)}
-        placeholder="Електронна пошта нового адміністратора"
-      />
-      <button onClick={addAdmin}>Додати адміністратора</button>
+      <h1 className="text-gray-800 mb-4 text-lg">Налаштування</h1>
+      
+      <div className="mb-4">
+        <h2 className="text-gray-800 mb-2 text-lg">Список адміністраторів</h2>
+        <table className="w-full bg-white rounded-sm shadow-md">
+          <thead>
+            <tr>
+              <th className="text-sm text-gray-600 uppercase border-b border-gray-200 px-4 py-2">Електронна пошта</th>
+              <th className="text-sm text-gray-600 uppercase border-b border-gray-200 px-4 py-2">Дії</th>
+            </tr>
+          </thead>
+          <tbody>
+            {admins.map((admin, index) => (
+              <tr key={index}>
+                <td className="px-4 py-1 border border-gray-200">{admin.email}</td>
+                <td className="px-4 py-1 border border-gray-200">
+                  <button onClick={() => deleteAdmin(admin.email)} className=" btn-red mx-auto">Видалити</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="mb-4">
+        <h2 className="text-gray-800 mb-2 text-lg">Додати нового адміністратора</h2>
+        <input
+          type="email"
+          value={newAdminEmail}
+          onChange={(e) => setNewAdminEmail(e.target.value)}
+          placeholder="Електронна пошта нового адміністратора"
+          className="border border-gray-200 rounded-lg px-1 w-full py-2 px-3 mb-2 focus:border-blue-900"
+        />
+        <button onClick={addAdmin} className="btn-primary">Додати адміністратора</button>
+      </div>
     </Layout>
   );
 }
