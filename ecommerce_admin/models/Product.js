@@ -11,7 +11,6 @@ const ProductSchema = new Schema({
   schoolClass: String,
   feedback: {type:mongoose.Types.ObjectId, ref:'Feedback'},
   rate:  {type: Number},
-
   file: [{ name: String, url: String }], 
 });
 
