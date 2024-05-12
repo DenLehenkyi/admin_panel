@@ -16,7 +16,6 @@ export default function Layout({children}) {
       </div>
     );
   }
-
   return (
     <div className="bg-bgGray min-h-screen ">
       <div className="block md:hidden flex items-center p-4">

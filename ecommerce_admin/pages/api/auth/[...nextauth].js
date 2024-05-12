@@ -12,6 +12,7 @@ export const authOptions = {
     }),
   ],
   adapter: MongoDBAdapter(clientPromise),
+  
   callbacks: {
     session: async ({ session, token, user }) => {
       const { email } = session?.user || {};
