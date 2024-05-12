@@ -1,13 +1,8 @@
-import clientPromise from '@/lib/mongodb'
-import { MongoDBAdapter } from '@auth/mongodb-adapter'
-import NextAuth, { getServerSession } from 'next-auth'
-import GoogleProvider from 'next-auth/providers/google' 
-
-const adminEmails = [
-  "denlehenkyi@gmail.com",
-  "denys.lehenkyi.oi.2022@lpnu.ua",
-  "pankiv.yaryna00@gmail.com"
-];
+import { MongoDBAdapter } from '@auth/mongodb-adapter';
+import NextAuth, { getServerSession } from 'next-auth';
+import GoogleProvider from 'next-auth/providers/google';
+import { Admins } from '@/models/Admins';
+import clientPromise from '@/lib/mongodb'; // Імпортуйте clientPromise з відповідного місця
 
 export const authOptions = {
   providers: [
@@ -18,23 +13,25 @@ export const authOptions = {
   ],
   adapter: MongoDBAdapter(clientPromise),
   callbacks: {
-    session: ({session,token,user}) => {
-      if (adminEmails.includes(session?.user?.email)  ) {
-        return session;
+    session: async ({ session, token, user }) => {
+      const { email } = session?.user || {};
+      const isAdmin = await Admins.exists({ email });
+
+      if (isAdmin) {
+        return session; 
       } else {
-        return false; // FALSE
+        return false; 
       }
     }
   },
   secret: process.env.NEXT_AUTH_SECRET,
-
 }
 
 export default NextAuth(authOptions);
 
-export async function isAdminRequest(req,res) {
-  const session = await getServerSession(req,res,authOptions);
-  if (!adminEmails.includes(session?.user?.email)) {
+export async function isAdminRequest(req, res) {
+  const session = await getServerSession(req, res, authOptions);
+  if (!session) {
     res.status(401);
     res.end();
     throw 'not an admin';
